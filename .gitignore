@@ -1,0 +1,12 @@
+*.metadata/*
+*/.DS_Store/*
+*/.settings/*
+*desktop.ini
+*.class
+*.classpath
+*.dll
+*.exe
+*.o
+*.project
+*.so
+!TetrisClone/native/*/*
