@@ -59,6 +59,9 @@ public class Tile {
         }
     };
 
+    private int x, y;
+    private int type;
+
     public static void init() {
         tileImages = retrieveTileImages();
     }
@@ -74,5 +77,29 @@ public class Tile {
             }
         }
         return returnValue;
+    }
+
+    public Tile(int type) {
+        this.type = type;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int getType() {
+        return type;
     }
 }

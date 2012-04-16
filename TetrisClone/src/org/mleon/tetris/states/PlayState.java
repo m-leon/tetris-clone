@@ -37,9 +37,11 @@ public class PlayState extends BasicGameState {
         g.drawImage(bgImage, 0, 0);
         g.setColor(new Color(0f, 0f, 0f, 0.5f));
         g.fillRect(boardX, boardY, boardWidth, boardHeight);
+        TileMgr.render(g);
     }
 
     public void update(GameContainer gc, StateBasedGame game, int delta) throws SlickException {
+        TileMgr.update(delta);
     }
 
     private Image createBgImage(Image img, int width, int height) {
