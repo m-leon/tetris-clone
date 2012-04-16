@@ -10,6 +10,10 @@ Dependencies:
 * lwjgl:
     + Version: 2.8.3
     + License: [BSD](http://lwjgl.org/license.php)
+* minlog
+    + Version: 1.2
+    + License: [New BSD](http://www.opensource.org/licenses/bsd-license.php)
+
 * Slick 2D:
     + Build: 274
     + License: [BSD](http://slick.cokeandcode.com/static.php?page=license)
