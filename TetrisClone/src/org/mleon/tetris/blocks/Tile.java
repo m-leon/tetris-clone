@@ -18,16 +18,6 @@ public class Tile {
     public static final int BLOCK_T = 5;
     public static final int BLOCK_Z = 6;
 
-    public static final int[] AVAILABLE_BLOCKS = {
-        BLOCK_I,
-        BLOCK_J,
-        BLOCK_L,
-        BLOCK_O,
-        BLOCK_S,
-        BLOCK_T,
-        BLOCK_Z
-    };
-
     public static final int[][][] BLOCK_SCHEMA = {
         { // I
             {1, 1, 1, 1},
@@ -67,8 +57,8 @@ public class Tile {
     }
 
     private static Image[] retrieveTileImages() {
-        Image[] returnValue = new Image[AVAILABLE_BLOCKS.length];
-        for (int i = 0; i < AVAILABLE_BLOCKS.length; i++) {
+        Image[] returnValue = new Image[BLOCK_SCHEMA.length];
+        for (int i = 0; i < BLOCK_SCHEMA.length; i++) {
             try {
                 returnValue[i] = new Image("./data/tile-" + i + ".png");
             } catch (SlickException e) {

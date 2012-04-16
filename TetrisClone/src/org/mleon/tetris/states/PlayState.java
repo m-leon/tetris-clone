@@ -29,8 +29,8 @@ public class PlayState extends BasicGameState {
         boardHeight = 600;
         boardX = (gc.getWidth() - boardWidth) / 2;
         boardY = 0;
-        TileMgr.init(boardX, boardY, boardWidth, boardHeight);
         Tile.init();
+        TileMgr.init(boardX, boardY, boardWidth, boardHeight);
     }
 
     public void render(GameContainer gc, StateBasedGame game, Graphics g) throws SlickException {
