@@ -48,13 +48,18 @@ public class PlayState extends BasicGameState {
 
     public void keyPressed(int key, char c) {
         if (key == Input.KEY_UP)
-            TileMgr.currentBlock.rotate();
-        if (key == Input.KEY_RIGHT)
-            TileMgr.currentBlock.moveRight();
+            TileMgr.rotate();
+        else if (key == Input.KEY_RIGHT)
+            TileMgr.moveRight();
+        else if (key == Input.KEY_DOWN)
+            TileMgr.downPressed = true;
+        else if (key == Input.KEY_LEFT)
+            TileMgr.moveLeft();
+    }
+
+    public void keyReleased(int key, char c) {
         if (key == Input.KEY_DOWN)
-            TileMgr.currentBlock.moveDown(); // TODO: While it's being held down, speed it up, not like this
-        if (key == Input.KEY_LEFT)
-            TileMgr.currentBlock.moveLeft();
+            TileMgr.downPressed = false;
     }
 
     private Image createBgImage(Image img, int width, int height) {
