@@ -40,6 +40,15 @@ public class TileMgr {
         currentBlock.update(delta);
     }
 
+    public static boolean isTileAt(int x, int y) {
+        for (int i = 0; i < tiles.size(); i++)
+            if (tiles.get(i).getX() == x)
+                if (tiles.get(i).getY() == y)
+                    return true;
+
+        return false;
+    }
+
     public static int[] getHighestTiles() {
         int[] returnValue = new int[10];
         Arrays.fill(returnValue, MAX_TILE_Y);

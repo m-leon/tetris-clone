@@ -33,13 +33,6 @@ public class Block {
     }
 
     public void moveDown() {
-        for (int i = 0; i < tiles.size(); i++) {
-            if (tiles.get(i).getY() >= TileMgr.MAX_TILE_Y) {
-                TileMgr.blockHit = true;
-                return;
-            }
-        }
-
         int[] highestBlock = TileMgr.getHighestTiles();
         for (int i = 0; i < tiles.size(); i++) {
             if (tiles.get(i).getY() >= highestBlock[tiles.get(i).getX()]) {
@@ -53,18 +46,26 @@ public class Block {
     }
 
     public void moveLeft() {
-        for (int i = 0; i < tiles.size(); i++)
+        for (int i = 0; i < tiles.size(); i++) {
             if (tiles.get(i).getX() <= TileMgr.MIN_TILE_X)
                 return;
+
+            if (TileMgr.isTileAt(tiles.get(i).getX() - 1, tiles.get(i).getY()))
+                return;
+        }
 
         for (int i = 0; i < tiles.size(); i++)
             tiles.get(i).moveLeft();
     }
 
     public void moveRight() {
-        for (int i = 0; i < tiles.size(); i++)
+        for (int i = 0; i < tiles.size(); i++) {
             if (tiles.get(i).getX() >= TileMgr.MAX_TILE_X)
                 return;
+
+            if (TileMgr.isTileAt(tiles.get(i).getX() + 1, tiles.get(i).getY()))
+                return;
+        }
 
         for (int i = 0; i < tiles.size(); i++)
             tiles.get(i).moveRight();
