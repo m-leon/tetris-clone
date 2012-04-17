@@ -36,5 +36,6 @@ public class TileMgr {
 
     public static void update(int delta) {
         currentBlock.update(delta);
+        // TODO: Convert block into Tile[] once it lands
     }
 }

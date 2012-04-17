@@ -79,6 +79,18 @@ public class Tile {
         this.x = x;
     }
 
+    public void moveDown() {
+        y++;
+    }
+
+    public void moveLeft() {
+        x--;
+    }
+
+    public void moveRight() {
+        x++;
+    }
+
     public int getX() {
         return x;
     }

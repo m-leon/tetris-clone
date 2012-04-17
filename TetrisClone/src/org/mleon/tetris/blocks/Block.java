@@ -7,9 +7,8 @@ import org.newdawn.slick.Image;
 
 public class Block {
     public static int boardX, boardY;
-    public static final int MAX_BLOCK_WIDTH = Tile.TILE_WIDTH * 4;
-    public static final int MAX_BLOCK_HEIGHT = Tile.TILE_HEIGHT * 2;
 
+    private int timePassed;
     private ArrayList<Tile> tiles = new ArrayList<Tile>();
 
     public static void init(int x, int y) {
@@ -39,6 +38,25 @@ public class Block {
     }
 
     public void update(int delta) {
-        // TODO: Calculate falling
+        timePassed += delta;
+        if (timePassed > 1000) {
+            timePassed = 0;
+            moveDown();
+        }
+    }
+
+    public void moveDown() {
+        for (int i = 0; i < tiles.size(); i++)
+            tiles.get(i).moveDown();
+    }
+
+    public void moveLeft() {
+        for (int i = 0; i < tiles.size(); i++)
+            tiles.get(i).moveLeft();
+    }
+
+    public void moveRight() {
+        for (int i = 0; i < tiles.size(); i++)
+            tiles.get(i).moveRight();
     }
 }
