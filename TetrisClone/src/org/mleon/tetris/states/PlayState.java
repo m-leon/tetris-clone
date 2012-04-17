@@ -16,7 +16,12 @@ import org.newdawn.slick.state.StateBasedGame;
 public class PlayState extends BasicGameState {
     public static final int ID = 1;
 
+    public static boolean playing;
+    public static int level, points;
+    public static int levelX, levelY;
+    public static int pointsX, pointsY;
     public static int boardWidth, boardHeight, boardX, boardY;
+    public static int infoWidth, infoHeight, infoX, infoY, infoOffset;
 
     private Image bgImage;
 
@@ -28,17 +33,33 @@ public class PlayState extends BasicGameState {
         gc.getGraphics().setBackground(Color.white);
         bgImage = new Image("./data/bg.png");
         bgImage = createBgImage(bgImage, gc.getWidth(), gc.getHeight());
+        playing = true;
+        level = 1;
+        points = 0;
         boardWidth = 300; // TODO: Base on resolution
         boardHeight = 600;
+        infoOffset = 5;
+        infoWidth = 200;
+        infoHeight = (gc.getGraphics().getFont().getLineHeight() * 2) + (infoOffset * 2);
         boardX = (gc.getWidth() - boardWidth) / 2;
         boardY = 0;
+        infoX = boardX - infoWidth;
+        infoY = (gc.getHeight() - infoHeight) / 2;
+        levelX = infoX + infoOffset;
+        levelY = infoY + infoOffset;
+        pointsX = infoX + infoOffset;
+        pointsY = infoY + infoOffset + gc.getGraphics().getFont().getLineHeight();
         TileMgr.init();
     }
 
     public void render(GameContainer gc, StateBasedGame game, Graphics g) throws SlickException {
         g.drawImage(bgImage, 0, 0);
         g.setColor(new Color(0f, 0f, 0f, 0.5f));
+        g.fillRect(infoX, infoY, infoWidth, infoHeight);
         g.fillRect(boardX, boardY, boardWidth, boardHeight);
+        g.setColor(Color.white);
+        g.drawString("Level: " + Integer.toString(level), levelX, levelY);
+        g.drawString("Points: " + Integer.toString(points), pointsX, pointsY);
         TileMgr.render(g);
     }
 

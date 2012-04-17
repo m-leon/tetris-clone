@@ -9,7 +9,7 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
 public class TileMgr {
-    public static int speed;
+    public static int baseSpeed;
     public static int[][] tiles;
     public static int timePassed;
     public static int MIN_TILE_X = 0;
@@ -19,7 +19,7 @@ public class TileMgr {
     public static boolean downPressed;
 
     public static void init() {
-        speed = 1000;
+        baseSpeed = 1000;
         tiles = new int[MAX_TILE_X + 1][MAX_TILE_Y + 1];
         for (int i = 0; i < tiles.length; i++)
             Arrays.fill(tiles[i], Block.NO_TYPE);
@@ -52,12 +52,15 @@ public class TileMgr {
     public static void update(int delta) {
         timePassed += delta;
         if (downPressed) {
-            if (timePassed > (speed / 3)) {
-                moveDown();
+            if (timePassed > (baseSpeed / (6 * PlayState.level))) {
+                if (PlayState.playing) {
+                    PlayState.points += 10;
+                    moveDown();
+                }
                 timePassed = 0;
             }
         } else {
-            if (timePassed > speed) {
+            if (timePassed > (baseSpeed / PlayState.level)) {
                 moveDown();
                 timePassed = 0;
             }
@@ -72,18 +75,22 @@ public class TileMgr {
             current = foundBlocks.get(i);
             if (current[1] == MAX_TILE_Y) {
                 convertToTiles(foundBlocks);
-                new Block(getRandomType());
+                if (PlayState.playing)
+                    new Block(getRandomType());
+
                 return;
             }
             nextType = tiles[current[0]][current[1] + 1];
             if (nextType != current[2] && nextType != Block.NO_TYPE) {
                 convertToTiles(foundBlocks);
-                new Block(getRandomType());
+                if (PlayState.playing)
+                    new Block(getRandomType());
+
                 return;
             }
         }
-        for (int i = foundBlocks.size(); i > 0; i--) {
-            int[] blockInfo = foundBlocks.get(i - 1);
+        for (int i = foundBlocks.size() - 1; i >= 0; i--) {
+            int[] blockInfo = foundBlocks.get(i);
             int x = blockInfo[0];
             int y = blockInfo[1];
             tiles[x][y] = Block.NO_TYPE;
@@ -103,8 +110,8 @@ public class TileMgr {
             if (nextType != current[2] && nextType != Block.NO_TYPE)
                 return;
         }
-        for (int i = foundBlocks.size(); i > 0; i--) {
-            int[] blockInfo = foundBlocks.get(i - 1);
+        for (int i = foundBlocks.size() - 1; i >= 0; i--) {
+            int[] blockInfo = foundBlocks.get(i);
             int x = blockInfo[0];
             int y = blockInfo[1];
             tiles[x][y] = Block.NO_TYPE;
@@ -135,6 +142,11 @@ public class TileMgr {
 
     public static void rotate() {
         // TODO: Rotate
+    }
+
+    public static void lost() {
+        PlayState.playing = false;
+        // TODO: Allow restart
     }
 
     private static void convertToTiles(ArrayList<int[]> blocks) {

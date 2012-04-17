@@ -17,6 +17,7 @@ public class Block {
     public static final int TILE_T  = 12;
     public static final int TILE_Z  = 13;
 
+    /* Schemas have to be rectangular */
     public static final int[][][] BLOCK_SCHEMA = {
         { // I
             {1, 1, 1, 1}
@@ -50,9 +51,26 @@ public class Block {
     public Block(int type) {
         int x = (TileMgr.MAX_TILE_X + 1 - BLOCK_SCHEMA[type][0].length) / 2;
         int y = 0;
-        for (int i = 0; i < BLOCK_SCHEMA[type].length; i++)
-            for (int j = 0; j < BLOCK_SCHEMA[type][i].length; j++)
-                if (BLOCK_SCHEMA[type][i][j] == 1)
+        for (int i = 0; i < BLOCK_SCHEMA[type].length; i++) {
+            for (int j = 0; j < BLOCK_SCHEMA[type][i].length; j++) {
+                if (BLOCK_SCHEMA[type][i][j] == 1) {
+                    if (TileMgr.tiles[x + j][y + i] != NO_TYPE)
+                        TileMgr.lost();
+
                     TileMgr.tiles[x + j][y + i] = type;
+                }
+            }
+        }
+    }
+
+    public static int[][] rotate(int[][] input) {
+        final int x = input.length;
+        final int y = input[0].length; // Requires rectangular input array
+        int[][] returnValue = new int[y][x];
+        for (int i = 0; i < x; i++)
+            for (int j = 0; j < y; j++)
+                returnValue[j][x - 1 - i] = input[i][j];
+
+        return returnValue;
     }
 }
