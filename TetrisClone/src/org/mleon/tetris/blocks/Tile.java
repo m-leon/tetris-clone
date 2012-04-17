@@ -1,5 +1,6 @@
 package org.mleon.tetris.blocks;
 
+import org.mleon.tetris.Core;
 import org.mleon.tetris.util.Log;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
@@ -20,32 +21,31 @@ public class Tile {
 
     public static final int[][][] BLOCK_SCHEMA = {
         { // I
-            {1, 1, 1, 1},
-            {0, 0, 0, 0}
+            {1, 1, 1, 1}
         },
         { // J
-            {1, 0, 0, 0},
-            {1, 1, 1, 0}
+            {1},
+            {1, 1, 1}
         },
         { // L
-            {0, 0, 1, 0},
-            {1, 1, 1, 0}
+            {0, 0, 1},
+            {1, 1, 1}
         },
         { // O
-            {1, 1, 0, 0},
-            {1, 1, 0, 0}
+            {1, 1},
+            {1, 1}
         },
         { // S
-            {0, 1, 1, 0},
-            {1, 1, 0, 0}
+            {0, 1, 1},
+            {1, 1}
         },
         { // T
-            {0, 1, 0, 0},
-            {1, 1, 1, 0}
+            {0, 1},
+            {1, 1, 1}
         },
         { // Z
-            {1, 1, 0, 0},
-            {0, 1, 1, 0}
+            {1, 1},
+            {0, 1, 1}
         }
     };
 
@@ -62,15 +62,17 @@ public class Tile {
             try {
                 returnValue[i] = new Image("./data/tile-" + i + ".png");
             } catch (SlickException e) {
-                // TODO: Close
                 Log.error(e);
+                Core.close(Core.EXIT_DATA_NOT_FOUND);
             }
         }
         return returnValue;
     }
 
-    public Tile(int type) {
+    public Tile(int type, int x, int y) {
         this.type = type;
+        setX(x);
+        setY(y);
     }
 
     public void setX(int x) {

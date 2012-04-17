@@ -13,6 +13,7 @@ public class Core extends StateBasedGame {
     public static int EXIT_NO_ERROR         = 0x00;
     public static int EXIT_CLOSE_REQUESTED  = 0x01;
     public static int EXIT_CONTAINER_FAIL   = 0x02;
+    public static int EXIT_DATA_NOT_FOUND   = 0x03;
 
     public Core() {
         super("TetrisClone");

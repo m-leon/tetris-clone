@@ -1,8 +1,9 @@
 package org.mleon.tetris.states;
 
-import org.mleon.tetris.blocks.Tile;
+import org.mleon.tetris.Core;
 import org.mleon.tetris.blocks.TileMgr;
 import org.mleon.tetris.util.Log;
+
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
@@ -29,8 +30,7 @@ public class PlayState extends BasicGameState {
         boardHeight = 600;
         boardX = (gc.getWidth() - boardWidth) / 2;
         boardY = 0;
-        Tile.init();
-        TileMgr.init(boardX, boardY, boardWidth, boardHeight);
+        TileMgr.init(boardX, boardY);
     }
 
     public void render(GameContainer gc, StateBasedGame game, Graphics g) throws SlickException {
@@ -45,8 +45,9 @@ public class PlayState extends BasicGameState {
     }
 
     private Image createBgImage(Image img, int width, int height) {
+        Image returnValue = null;
         try {
-            Image returnValue = new Image(width, height);
+            returnValue = new Image(width, height);
             int widthCount = width / bgImage.getWidth();
             int heightCount = height / bgImage.getHeight();
             int imageWidth = bgImage.getWidth();
@@ -57,11 +58,10 @@ public class PlayState extends BasicGameState {
                     g.drawImage(bgImage, imageWidth * j, imageHeight * i);
 
             g.flush();
-            return returnValue;
         } catch (SlickException e) {
             Log.error(e);
-            // Close
-            return null;
+            Core.close(Core.EXIT_DATA_NOT_FOUND);
         }
+        return returnValue;
     }
 }
