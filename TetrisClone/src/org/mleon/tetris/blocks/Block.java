@@ -1,6 +1,8 @@
 package org.mleon.tetris.blocks;
 
 public class Block {
+    public static int MAX_DIMENSION; // Because blocks can be rotated, applies to both X and Y
+
     public static final int NO_TYPE = -1;
     public static final int BLOCK_I = 0;
     public static final int BLOCK_J = 1;
@@ -48,19 +50,23 @@ public class Block {
         }
     };
 
+    public static void init() {
+        int maximum = -1;
+        for (int i = 0; i < BLOCK_SCHEMA.length; i++) {
+            if (BLOCK_SCHEMA[i].length > maximum)
+                maximum = BLOCK_SCHEMA[i].length;
+            for (int j = 0; j < BLOCK_SCHEMA[i].length; j++) {
+                if (BLOCK_SCHEMA[i][j].length > maximum)
+                    maximum = BLOCK_SCHEMA[i][j].length;
+            }
+        }
+        MAX_DIMENSION = maximum;
+    }
+
     public Block(int type) {
         int x = (TileMgr.MAX_TILE_X + 1 - BLOCK_SCHEMA[type][0].length) / 2;
         int y = 0;
-        for (int i = 0; i < BLOCK_SCHEMA[type].length; i++) {
-            for (int j = 0; j < BLOCK_SCHEMA[type][i].length; j++) {
-                if (BLOCK_SCHEMA[type][i][j] == 1) {
-                    if (TileMgr.tiles[x + j][y + i] != NO_TYPE)
-                        TileMgr.lost();
-
-                    TileMgr.tiles[x + j][y + i] = type;
-                }
-            }
-        }
+        TileMgr.buildSchema(BLOCK_SCHEMA[type], x, y, type);
     }
 
     public static int[][] rotate(int[][] input) {

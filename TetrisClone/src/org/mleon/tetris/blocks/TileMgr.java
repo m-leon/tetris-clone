@@ -9,22 +9,27 @@ import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 
 public class TileMgr {
-    public static int baseSpeed;
     public static int[][] tiles;
-    public static int timePassed;
     public static int MIN_TILE_X = 0;
     public static int MAX_TILE_X = 9;
     public static int MIN_TILE_Y = 0;
     public static int MAX_TILE_Y = 19;
     public static boolean downPressed;
 
+    private static int baseSpeed;
+    private static int timePassed;
+    private static int blockRotation; // 0 - 3
+
     public static void init() {
         baseSpeed = 1000;
+        timePassed = 0;
+        blockRotation = 0;
         tiles = new int[MAX_TILE_X + 1][MAX_TILE_Y + 1];
         for (int i = 0; i < tiles.length; i++)
             Arrays.fill(tiles[i], Block.NO_TYPE);
 
         Tile.init();
+        Block.init();
         new Block(getRandomType());
     }
 
@@ -68,20 +73,18 @@ public class TileMgr {
     }
 
     public static void moveDown() {
-        ArrayList<int[]> foundBlocks = findBlocks();
-        int[] current;
+        int[][] foundBlocks = findBlocks();
         int nextType;
-        for (int i = 0; i < foundBlocks.size(); i++) {
-            current = foundBlocks.get(i);
-            if (current[1] == MAX_TILE_Y) {
+        for (int i = 0; i < foundBlocks.length; i++) {
+            if (foundBlocks[i][1] == MAX_TILE_Y) {
                 convertToTiles(foundBlocks);
                 if (PlayState.playing)
                     new Block(getRandomType());
 
                 return;
             }
-            nextType = tiles[current[0]][current[1] + 1];
-            if (nextType != current[2] && nextType != Block.NO_TYPE) {
+            nextType = tiles[foundBlocks[i][0]][foundBlocks[i][1] + 1];
+            if (nextType != foundBlocks[i][2] && nextType != Block.NO_TYPE) {
                 convertToTiles(foundBlocks);
                 if (PlayState.playing)
                     new Block(getRandomType());
@@ -89,84 +92,118 @@ public class TileMgr {
                 return;
             }
         }
-        for (int i = foundBlocks.size() - 1; i >= 0; i--) {
-            int[] blockInfo = foundBlocks.get(i);
-            int x = blockInfo[0];
-            int y = blockInfo[1];
+        for (int i = foundBlocks.length - 1; i >= 0; i--) {
+            int x = foundBlocks[i][0];
+            int y = foundBlocks[i][1];
             tiles[x][y] = Block.NO_TYPE;
-            tiles[x][y + 1] = blockInfo[2];
+            tiles[x][y + 1] = foundBlocks[i][2];
         }
     }
 
     public static void moveRight() {
-        ArrayList<int[]> foundBlocks = findBlocks();
-        int[] current;
+        int[][] foundBlocks = findBlocks();
         int nextType;
-        for (int i = 0; i < foundBlocks.size(); i++) {
-            current = foundBlocks.get(i);
-            if (current[0] == MAX_TILE_X)
+        for (int i = 0; i < foundBlocks.length; i++) {
+            if (foundBlocks[i][0] == MAX_TILE_X)
                 return;
-            nextType = tiles[current[0] + 1][current[1]];
-            if (nextType != current[2] && nextType != Block.NO_TYPE)
+            nextType = tiles[foundBlocks[i][0] + 1][foundBlocks[i][1]];
+            if (nextType != foundBlocks[i][2] && nextType != Block.NO_TYPE)
                 return;
         }
-        for (int i = foundBlocks.size() - 1; i >= 0; i--) {
-            int[] blockInfo = foundBlocks.get(i);
-            int x = blockInfo[0];
-            int y = blockInfo[1];
+        for (int i = foundBlocks.length - 1; i >= 0; i--) {
+            int x = foundBlocks[i][0];
+            int y = foundBlocks[i][1];
             tiles[x][y] = Block.NO_TYPE;
-            tiles[x + 1][y] = blockInfo[2];
+            tiles[x + 1][y] = foundBlocks[i][2];
         }
     }
 
     public static void moveLeft() {
-        ArrayList<int[]> foundBlocks = findBlocks();
-        int[] current;
+        int[][] foundBlocks = findBlocks();
         int nextType;
-        for (int i = 0; i < foundBlocks.size(); i++) {
-            current = foundBlocks.get(i);
-            if (current[0] == MIN_TILE_X)
+        for (int i = 0; i < foundBlocks.length; i++) {
+            if (foundBlocks[i][0] == MIN_TILE_X)
                 return;
-            nextType = tiles[current[0] - 1][current[1]];
-            if (nextType != current[2] && nextType != Block.NO_TYPE)
+            nextType = tiles[foundBlocks[i][0] - 1][foundBlocks[i][1]];
+            if (nextType != foundBlocks[i][2] && nextType != Block.NO_TYPE)
                 return;
         }
-        for (int i = 0; i < foundBlocks.size(); i++) {
-            int[] blockInfo = foundBlocks.get(i);
-            int x = blockInfo[0];
-            int y = blockInfo[1];
+        for (int i = 0; i < foundBlocks.length; i++) {
+            int x = foundBlocks[i][0];
+            int y = foundBlocks[i][1];
             tiles[x][y] = Block.NO_TYPE;
-            tiles[x - 1][y] = blockInfo[2];
+            tiles[x - 1][y] = foundBlocks[i][2];
         }
     }
 
     public static void rotate() {
-        // TODO: Rotate
+        int[][] foundBlocks = findBlocks();
+        if (foundBlocks.length == 0) // TODO: Remove once xBase is set properly
+            return;
+
+        int currentType = foundBlocks[0][2];
+        int[][] currentSchema = Block.BLOCK_SCHEMA[currentType];
+        for (int i = 0; i < blockRotation; i++)
+            currentSchema = Block.rotate(currentSchema);
+
+        int[][] newSchema = Block.rotate(currentSchema);
+        int xBase = MAX_TILE_X, yBase = MIN_TILE_Y; // Lower left hand corner of the found blocks
+        for (int i = 0; i < foundBlocks.length; i++) { // TODO: Rewrite loop
+            if (foundBlocks[i][0] < xBase)
+                xBase = foundBlocks[i][0];
+            if (foundBlocks[i][1] > yBase)
+                yBase = foundBlocks[i][1];
+        }
+        removeBlocksAndTiles(foundBlocks);
+        buildSchema(newSchema, xBase, yBase, currentType);
+        blockRotation += 1;
+        if (blockRotation > 3 || blockRotation < 0)
+            blockRotation = 0;
     }
 
-    public static void lost() {
+    public static void endGame() {
         PlayState.playing = false;
         // TODO: Allow restart
     }
 
-    private static void convertToTiles(ArrayList<int[]> blocks) {
-        int[] current;
-        for (int i = 0; i < blocks.size(); i++) {
-            current = blocks.get(i);
-            tiles[current[0]][current[1]] = current[2] + 7;
+    public static void buildSchema(int[][] schema, int x, int y, int type) {
+        for (int i = 0; i < schema.length; i++) {
+            for (int j = 0; j < schema[i].length; j++) {
+                if (schema[i][j] == 1) {
+                    if (TileMgr.tiles[x + j][y + i] != Block.NO_TYPE)
+                        TileMgr.endGame();
+
+                    TileMgr.tiles[x + j][y + i] = type;
+                }
+            }
         }
     }
 
-    private static ArrayList<int[]> findBlocks() {
-        ArrayList<int[]> returnValue = new ArrayList<int[]>();
+    private static void removeBlocksAndTiles(int[][] input) {
+        for (int i = 0; i < input.length; i++)
+            tiles[input[i][0]][input[i][1]] = Block.NO_TYPE;
+    }
+
+    private static void convertToTiles(int[][] blocks) {
+        for (int i = 0; i < blocks.length; i++)
+            tiles[blocks[i][0]][blocks[i][1]] = blocks[i][2] + 7;
+    }
+
+    private static int[][] findBlocks() {
+        // TODO: Rewrite without arraylist, preferably.
+        ArrayList<int[]> foundBlocks = new ArrayList<int[]>();
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[i].length; j++) {
                 if (isBlockType(tiles[i][j])) {
                     int[] blockLocation = {i, j, tiles[i][j]};
-                    returnValue.add(blockLocation);
+                    foundBlocks.add(blockLocation);
                 }
             }
         }
+        int[][] returnValue = new int[foundBlocks.size()][3]; // 0 - X, 1 - Y, 2 - Type
+        for (int i = 0; i < foundBlocks.size(); i++)
+            returnValue[i] = foundBlocks.get(i);
+
         return returnValue;
     }
 
