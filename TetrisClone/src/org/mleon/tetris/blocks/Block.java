@@ -33,13 +33,21 @@ public class Block {
     }
 
     public void moveDown() {
-        for (int i = 0; i < tiles.size(); i++)
+        for (int i = 0; i < tiles.size(); i++) {
             if (tiles.get(i).getY() >= TileMgr.MAX_TILE_Y) {
                 TileMgr.blockHit = true;
                 return;
             }
+        }
 
-        // TODO: Check with TileMgr if it's going to hit other tiles
+        int[] highestBlock = TileMgr.getHighestTiles();
+        for (int i = 0; i < tiles.size(); i++) {
+            if (tiles.get(i).getY() >= highestBlock[tiles.get(i).getX()]) {
+                TileMgr.blockHit = true;
+                return;
+            }
+        }
+
         for (int i = 0; i < tiles.size(); i++)
             tiles.get(i).moveDown();
     }
