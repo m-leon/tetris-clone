@@ -3,39 +3,44 @@ package org.mleon.tetris.blocks;
 import java.util.ArrayList;
 
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 
 public class TileMgr {
-    private static Block currentBlock;
-    private static int boardX, boardY;
+    public static int MIN_TILE_X = 0;
+    public static int MAX_TILE_X = 9;
+    public static int MIN_TILE_Y = 0;
+    public static int MAX_TILE_Y = 19;
+    public static Block currentBlock;
+    public static boolean blockHit = false;
+
     private static ArrayList<Tile> tiles = new ArrayList<Tile>();
 
-    public static void init(int x, int y) {
+    public static void init() {
         Tile.init();
-        Block.init(x, y);
-        boardX = x;
-        boardY = y;
-        currentBlock = new Block(Tile.BLOCK_O);
+        currentBlock = new Block(getRandomType());
     }
 
     public static void render(Graphics g) {
+        for (int i = 0; i < tiles.size(); i++)
+            tiles.get(i).render(g);
+
         if (currentBlock != null)
             currentBlock.render(g);
-
-        int x, y;
-        Image img;
-        Tile current;
-        for (int i = 0; i < tiles.size(); i++) {
-            current = tiles.get(i);
-            img = Tile.tileImages[current.getType()];
-            x = boardX + (current.getX() * Tile.TILE_WIDTH);
-            y = boardY + (current.getY() * Tile.TILE_HEIGHT);
-            g.drawImage(img, x, y);
-        }
     }
 
     public static void update(int delta) {
+        if (blockHit) {
+            blockHit = false;
+            ArrayList<Tile> newTiles = currentBlock.getTiles();
+            for (int i = 0; i < newTiles.size(); i++)
+                tiles.add(newTiles.get(i));
+
+            currentBlock = new Block(getRandomType());
+        }
         currentBlock.update(delta);
-        // TODO: Convert block into Tile[] once it lands
+    }
+
+    private static int getRandomType() {
+        // TODO: Make each have a certain percentage?
+        return (int)(Math.random() * Tile.BLOCK_SCHEMA.length);
     }
 }

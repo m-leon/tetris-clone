@@ -3,20 +3,14 @@ package org.mleon.tetris.blocks;
 import java.util.ArrayList;
 
 import org.newdawn.slick.Graphics;
-import org.newdawn.slick.Image;
 
 public class Block {
-    public static int boardX, boardY;
-
+    private int speed;
     private int timePassed;
     private ArrayList<Tile> tiles = new ArrayList<Tile>();
 
-    public static void init(int x, int y) {
-        boardX = x;
-        boardY = y;
-    }
-
     public Block(int type) {
+        speed = 1000; // TODO: Calculate based on level, add modifiers if down is being pressed
         for (int i = 0; i < Tile.BLOCK_SCHEMA[type].length; i++)
             for (int j = 0; j < Tile.BLOCK_SCHEMA[type][i].length; j++)  {
                 if (Tile.BLOCK_SCHEMA[type][i][j] == 1)
@@ -25,21 +19,14 @@ public class Block {
     }
 
     public void render(Graphics g) {
-        int x, y;
-        Image img;
-        Tile current;
         for (int i = 0; i < tiles.size(); i++) {
-            current = tiles.get(i);
-            img = Tile.tileImages[current.getType()];
-            x = boardX + (current.getX() * Tile.TILE_WIDTH);
-            y = boardY + (current.getY() * Tile.TILE_HEIGHT);
-            g.drawImage(img, x, y);
+            tiles.get(i).render(g);
         }
     }
 
     public void update(int delta) {
         timePassed += delta;
-        if (timePassed > 1000) {
+        if (timePassed > speed) {
             timePassed = 0;
             moveDown();
         }
@@ -47,16 +34,39 @@ public class Block {
 
     public void moveDown() {
         for (int i = 0; i < tiles.size(); i++)
+            if (tiles.get(i).getY() >= TileMgr.MAX_TILE_Y) {
+                TileMgr.blockHit = true;
+                return;
+            }
+
+        // TODO: Check with TileMgr if it's going to hit other tiles
+        for (int i = 0; i < tiles.size(); i++)
             tiles.get(i).moveDown();
     }
 
     public void moveLeft() {
+        for (int i = 0; i < tiles.size(); i++)
+            if (tiles.get(i).getX() <= TileMgr.MIN_TILE_X)
+                return;
+
         for (int i = 0; i < tiles.size(); i++)
             tiles.get(i).moveLeft();
     }
 
     public void moveRight() {
         for (int i = 0; i < tiles.size(); i++)
+            if (tiles.get(i).getX() >= TileMgr.MAX_TILE_X)
+                return;
+
+        for (int i = 0; i < tiles.size(); i++)
             tiles.get(i).moveRight();
+    }
+
+    public void rotate() {
+        // TODO: Rotate.
+    }
+
+    public ArrayList<Tile> getTiles() {
+        return tiles;
     }
 }

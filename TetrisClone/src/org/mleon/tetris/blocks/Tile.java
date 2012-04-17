@@ -1,7 +1,10 @@
 package org.mleon.tetris.blocks;
 
 import org.mleon.tetris.Core;
+import org.mleon.tetris.states.PlayState;
 import org.mleon.tetris.util.Log;
+
+import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
 import org.newdawn.slick.SlickException;
 
@@ -73,6 +76,13 @@ public class Tile {
         this.type = type;
         setX(x);
         setY(y);
+    }
+
+    public void render(Graphics g) {
+        Image img = Tile.tileImages[getType()];
+        int drawX = PlayState.boardX + (getX() * Tile.TILE_WIDTH);
+        int drawY = PlayState.boardY + (getY() * Tile.TILE_HEIGHT);
+        g.drawImage(img, drawX, drawY);
     }
 
     public void setX(int x) {

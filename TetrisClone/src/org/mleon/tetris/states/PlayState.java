@@ -8,6 +8,7 @@ import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
 import org.newdawn.slick.Image;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.BasicGameState;
 import org.newdawn.slick.state.StateBasedGame;
@@ -15,8 +16,9 @@ import org.newdawn.slick.state.StateBasedGame;
 public class PlayState extends BasicGameState {
     public static final int ID = 1;
 
+    public static int boardWidth, boardHeight, boardX, boardY;
+
     private Image bgImage;
-    private int boardWidth, boardHeight, boardX, boardY;
 
     public int getID() {
         return ID;
@@ -30,7 +32,7 @@ public class PlayState extends BasicGameState {
         boardHeight = 600;
         boardX = (gc.getWidth() - boardWidth) / 2;
         boardY = 0;
-        TileMgr.init(boardX, boardY);
+        TileMgr.init();
     }
 
     public void render(GameContainer gc, StateBasedGame game, Graphics g) throws SlickException {
@@ -42,6 +44,17 @@ public class PlayState extends BasicGameState {
 
     public void update(GameContainer gc, StateBasedGame game, int delta) throws SlickException {
         TileMgr.update(delta);
+    }
+
+    public void keyPressed(int key, char c) {
+        if (key == Input.KEY_UP)
+            TileMgr.currentBlock.rotate();
+        if (key == Input.KEY_RIGHT)
+            TileMgr.currentBlock.moveRight();
+        if (key == Input.KEY_DOWN)
+            TileMgr.currentBlock.moveDown(); // TODO: While it's being held down, speed it up, not like this
+        if (key == Input.KEY_LEFT)
+            TileMgr.currentBlock.moveLeft();
     }
 
     private Image createBgImage(Image img, int width, int height) {
