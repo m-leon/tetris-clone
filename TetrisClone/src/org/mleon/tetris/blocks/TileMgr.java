@@ -30,7 +30,7 @@ public class TileMgr {
 
         Tile.init();
         Block.init();
-        new Block(getRandomType());
+        newBlock();
     }
 
     public static void render(Graphics g) {
@@ -78,22 +78,16 @@ public class TileMgr {
         for (int i = 0; i < foundBlocks.length; i++) {
             if (foundBlocks[i][1] == MAX_TILE_Y) {
                 convertToTiles(foundBlocks);
-                if (PlayState.playing) {
-                    checkForCompleteLines();
-                    blockRotation = 0;
-                    new Block(getRandomType());
-                }
+                if (PlayState.playing)
+                    newBlock();
 
                 return;
             }
             nextType = tiles[foundBlocks[i][0]][foundBlocks[i][1] + 1];
             if (nextType != foundBlocks[i][2] && nextType != Block.NO_TYPE) {
                 convertToTiles(foundBlocks);
-                if (PlayState.playing) {
-                    checkForCompleteLines();
-                    blockRotation = 0;
-                    new Block(getRandomType());
-                }
+                if (PlayState.playing)
+                    newBlock();
 
                 return;
             }
@@ -183,6 +177,12 @@ public class TileMgr {
                 }
             }
         }
+    }
+
+    private static void newBlock() {
+        checkForCompleteLines();
+        blockRotation = 0;
+        new Block(getRandomType());
     }
 
     private static void checkForCompleteLines() {

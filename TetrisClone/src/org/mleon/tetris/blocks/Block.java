@@ -55,10 +55,9 @@ public class Block {
         for (int i = 0; i < BLOCK_SCHEMA.length; i++) {
             if (BLOCK_SCHEMA[i].length > maximum)
                 maximum = BLOCK_SCHEMA[i].length;
-            for (int j = 0; j < BLOCK_SCHEMA[i].length; j++) {
+            for (int j = 0; j < BLOCK_SCHEMA[i].length; j++)
                 if (BLOCK_SCHEMA[i][j].length > maximum)
                     maximum = BLOCK_SCHEMA[i][j].length;
-            }
         }
         MAX_DIMENSION = maximum;
     }
