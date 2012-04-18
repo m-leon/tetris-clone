@@ -78,16 +78,20 @@ public class TileMgr {
         for (int i = 0; i < foundBlocks.length; i++) {
             if (foundBlocks[i][1] == MAX_TILE_Y) {
                 convertToTiles(foundBlocks);
-                if (PlayState.playing)
+                if (PlayState.playing) {
+                    checkForCompleteLines();
                     new Block(getRandomType());
+                }
 
                 return;
             }
             nextType = tiles[foundBlocks[i][0]][foundBlocks[i][1] + 1];
             if (nextType != foundBlocks[i][2] && nextType != Block.NO_TYPE) {
                 convertToTiles(foundBlocks);
-                if (PlayState.playing)
+                if (PlayState.playing) {
+                    checkForCompleteLines();
                     new Block(getRandomType());
+                }
 
                 return;
             }
@@ -166,6 +170,47 @@ public class TileMgr {
         // TODO: Allow restart
     }
 
+    public static void buildSchema(int[][] schema, int x, int y, int type) {
+        for (int i = 0; i < schema.length; i++) {
+            for (int j = 0; j < schema[i].length; j++) {
+                if (schema[i][j] == 1) {
+                    if (tiles[x + j][y + i] != Block.NO_TYPE)
+                        endGame();
+
+                    tiles[x + j][y + i] = type;
+                }
+            }
+        }
+    }
+
+    private static void checkForCompleteLines() {
+        int[] horizontalTileCount = new int[MAX_TILE_Y + 1];
+        for (int i = 0; i < tiles.length; i++)
+            for (int j = 0; j < tiles[i].length; j++)
+                if (tiles[i][j] != Block.NO_TYPE)
+                    horizontalTileCount[j] += 1;
+
+        for (int i = 0; i < horizontalTileCount.length; i++)
+            if (horizontalTileCount[i] == MAX_TILE_X + 1)
+                completeLine(i);
+    }
+
+    private static void completeLine(int line) {
+        PlayState.points += 1000;
+        removeLine(line);
+    }
+
+    private static void removeLine(int line) {
+        for (int i = 0; i <= MAX_TILE_X; i++) {
+            for (int j = line; j >= 0; j--) {
+                if (j == 0)
+                    tiles[i][j] = Block.NO_TYPE;
+                else
+                    tiles[i][j] = tiles[i][j - 1];
+            }
+        }
+    }
+
     private static boolean ensurePlacement(int[][] schema, int x, int y) {
         for (int i = 0; i < schema.length; i++)
             for (int j = 0; j < schema[i].length; j++)
@@ -186,19 +231,6 @@ public class TileMgr {
             return false;
 
         return true;
-    }
-
-    public static void buildSchema(int[][] schema, int x, int y, int type) {
-        for (int i = 0; i < schema.length; i++) {
-            for (int j = 0; j < schema[i].length; j++) {
-                if (schema[i][j] == 1) {
-                    if (tiles[x + j][y + i] != Block.NO_TYPE)
-                        endGame();
-
-                    tiles[x + j][y + i] = type;
-                }
-            }
-        }
     }
 
     private static void removeBlocksAndTiles(int[][] input) {
