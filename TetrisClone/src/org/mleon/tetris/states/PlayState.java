@@ -17,7 +17,8 @@ public class PlayState extends BasicGameState {
     public static final int ID = 1;
 
     public static boolean playing;
-    public static int level, points;
+    public static int level;
+    public static long points;
     public static int levelX, levelY;
     public static int pointsX, pointsY;
     public static int boardWidth, boardHeight, boardX, boardY;
@@ -59,23 +60,24 @@ public class PlayState extends BasicGameState {
         g.fillRect(boardX, boardY, boardWidth, boardHeight);
         g.setColor(Color.white);
         g.drawString("Level: " + Integer.toString(level), levelX, levelY);
-        g.drawString("Points: " + Integer.toString(points), pointsX, pointsY);
+        g.drawString("Points: " + Long.toString(points), pointsX, pointsY);
         TileMgr.render(g);
     }
 
     public void update(GameContainer gc, StateBasedGame game, int delta) throws SlickException {
-        // TODO: Add a loop to check score change level if necessary
         TileMgr.update(delta);
+        if (points > (level * 10000))
+            level += 1;
     }
 
     public void keyPressed(int key, char c) {
-        if (key == Input.KEY_UP)
+        if (key == Input.KEY_UP && playing)
             TileMgr.rotate();
-        else if (key == Input.KEY_RIGHT)
+        else if (key == Input.KEY_RIGHT && playing)
             TileMgr.moveRight();
-        else if (key == Input.KEY_DOWN)
+        else if (key == Input.KEY_DOWN && playing)
             TileMgr.downPressed = true;
-        else if (key == Input.KEY_LEFT)
+        else if (key == Input.KEY_LEFT && playing)
             TileMgr.moveLeft();
     }
 
