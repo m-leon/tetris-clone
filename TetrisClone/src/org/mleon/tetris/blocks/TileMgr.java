@@ -190,13 +190,21 @@ public class TileMgr {
                 if (tiles[i][j] != Block.NO_TYPE)
                     horizontalTileCount[j] += 1;
 
-        for (int i = 0; i < horizontalTileCount.length; i++)
-            if (horizontalTileCount[i] == MAX_TILE_X + 1)
+        int completeCount = 0;
+        for (int i = 0; i < horizontalTileCount.length; i++) {
+            if (horizontalTileCount[i] == MAX_TILE_X + 1) {
+                completeCount++;
                 completeLine(i);
+            }
+        }
+        if (completeCount == Block.MAX_DIMENSION) // Tetris!
+            PlayState.points += 1000 * completeCount * 2;
+        else
+            PlayState.points += 1000 * completeCount;
+
     }
 
     private static void completeLine(int line) {
-        PlayState.points += 1000;
         removeLine(line);
     }
 
@@ -244,7 +252,6 @@ public class TileMgr {
     }
 
     private static int[][] findBlocks() {
-        // TODO: Rewrite without arraylist, preferably.
         ArrayList<int[]> foundBlocks = new ArrayList<int[]>();
         for (int i = 0; i < tiles.length; i++) {
             for (int j = 0; j < tiles[i].length; j++) {
