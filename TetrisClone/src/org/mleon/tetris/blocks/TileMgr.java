@@ -80,6 +80,7 @@ public class TileMgr {
                 convertToTiles(foundBlocks);
                 if (PlayState.playing) {
                     checkForCompleteLines();
+                    blockRotation = 0;
                     new Block(getRandomType());
                 }
 
@@ -90,6 +91,7 @@ public class TileMgr {
                 convertToTiles(foundBlocks);
                 if (PlayState.playing) {
                     checkForCompleteLines();
+                    blockRotation = 0;
                     new Block(getRandomType());
                 }
 
