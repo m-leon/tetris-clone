@@ -148,17 +148,20 @@ public class TileMgr {
 
         int[][] newSchema = Block.rotate(currentSchema);
         int xBase = MAX_TILE_X, yBase = MIN_TILE_Y; // Lower left hand corner of the found blocks
-        for (int i = 0; i < foundBlocks.length; i++) { // TODO: Rewrite loop
+        for (int i = 0; i < foundBlocks.length; i++) {
             if (foundBlocks[i][0] < xBase)
                 xBase = foundBlocks[i][0];
             if (foundBlocks[i][1] > yBase)
                 yBase = foundBlocks[i][1];
         }
-        removeBlocksAndTiles(foundBlocks);
-        buildSchema(newSchema, xBase, yBase, currentType);
-        blockRotation += 1;
-        if (blockRotation > 3 || blockRotation < 0)
-            blockRotation = 0;
+        yBase -= currentSchema.length; // TODO: Rewrite
+        if (ensurePlacement(newSchema, xBase, yBase)) {
+            removeBlocksAndTiles(foundBlocks);
+            buildSchema(newSchema, xBase, yBase, currentType);
+            blockRotation += 1;
+            if (blockRotation > 3 || blockRotation < 0)
+                blockRotation = 0;
+        }
     }
 
     public static void endGame() {
@@ -166,14 +169,38 @@ public class TileMgr {
         // TODO: Allow restart
     }
 
+    private static boolean ensurePlacement(int[][] schema, int x, int y) {
+        for (int i = 0; i < schema.length; i++) {
+            for (int j = 0; j < schema[i].length; j++) {
+                if (!isWithinBounds(x + j, y + i))
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static boolean isWithinBounds(int x, int y) {
+        if (x < MIN_TILE_X)
+            return false;
+        else if (x > MAX_TILE_X)
+            return false;
+        else if (y < MIN_TILE_Y)
+            return false;
+        else if (y > MAX_TILE_Y)
+            return false;
+
+        return true;
+    }
+
     public static void buildSchema(int[][] schema, int x, int y, int type) {
         for (int i = 0; i < schema.length; i++) {
             for (int j = 0; j < schema[i].length; j++) {
                 if (schema[i][j] == 1) {
-                    if (TileMgr.tiles[x + j][y + i] != Block.NO_TYPE)
-                        TileMgr.endGame();
+                    if (tiles[x + j][y + i] != Block.NO_TYPE)
+                        endGame();
 
-                    TileMgr.tiles[x + j][y + i] = type;
+                    tiles[x + j][y + i] = type;
                 }
             }
         }
