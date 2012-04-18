@@ -32,7 +32,7 @@ public class PlayState extends BasicGameState {
 
     public void init(GameContainer gc, StateBasedGame game) throws SlickException {
         gc.getGraphics().setBackground(Color.white);
-        bgImage = new Image("./data/bg.png");
+        bgImage = new Image("data/bg.png");
         bgImage = createBgImage(bgImage, gc.getWidth(), gc.getHeight());
         playing = true;
         level = 1;

@@ -20,7 +20,7 @@ public class Tile {
         Image[] returnValue = new Image[Block.BLOCK_SCHEMA.length];
         for (int i = 0; i < returnValue.length; i++) {
             try {
-                returnValue[i] = new Image("./data/tile-" + i + ".png");
+                returnValue[i] = new Image("data/tile-" + i + ".png");
             } catch (SlickException e) {
                 Log.error(e);
                 Core.close(Core.EXIT_DATA_NOT_FOUND);
