@@ -138,9 +138,6 @@ public class TileMgr {
 
     public static void rotate() {
         int[][] foundBlocks = findBlocks();
-        if (foundBlocks.length == 0) // TODO: Remove once xBase is set properly
-            return;
-
         int currentType = foundBlocks[0][2];
         int[][] currentSchema = Block.BLOCK_SCHEMA[currentType];
         for (int i = 0; i < blockRotation; i++)
@@ -154,7 +151,7 @@ public class TileMgr {
             if (foundBlocks[i][1] > yBase)
                 yBase = foundBlocks[i][1];
         }
-        yBase -= currentSchema.length; // TODO: Rewrite
+        yBase -= currentSchema.length / 2;
         if (ensurePlacement(newSchema, xBase, yBase)) {
             removeBlocksAndTiles(foundBlocks);
             buildSchema(newSchema, xBase, yBase, currentType);
