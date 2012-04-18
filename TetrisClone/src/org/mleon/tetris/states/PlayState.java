@@ -64,6 +64,7 @@ public class PlayState extends BasicGameState {
     }
 
     public void update(GameContainer gc, StateBasedGame game, int delta) throws SlickException {
+        // TODO: Add a loop to check score change level if necessary
         TileMgr.update(delta);
     }
 

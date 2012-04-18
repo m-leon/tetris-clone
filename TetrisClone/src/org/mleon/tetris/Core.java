@@ -51,6 +51,7 @@ public class Core extends StateBasedGame {
             container.setDisplayMode(width, height, fullscreen);
             container.setVSync(vsync);
             container.setShowFPS(fpsCounter);
+            container.setIcon("./data/icon.png");
             container.start();
         } catch (SlickException e) {
             Log.error(e);
