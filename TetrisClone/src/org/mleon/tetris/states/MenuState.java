@@ -84,7 +84,6 @@ public class MenuState extends BasicGameState implements ComponentListener {
     }
 
     public void componentActivated(AbstractComponent source) {
-        Log.info(source.toString());
         if (source == areas[0])
             game.enterState(PlayState.ID, new FadeOutTransition(Color.black), new FadeInTransition(Color.black));
         else if (source == areas[1])

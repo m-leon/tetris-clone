@@ -22,14 +22,19 @@ public class TileMgr {
 
     public static void init() {
         baseSpeed = 1000;
-        timePassed = 0;
-        blockRotation = 0;
         tiles = new int[MAX_TILE_X + 1][MAX_TILE_Y + 1];
         for (int i = 0; i < tiles.length; i++)
             Arrays.fill(tiles[i], Block.NO_TYPE);
 
         Tile.init();
         Block.init();
+        newBlock();
+    }
+
+    public static void reinit() {
+        for (int i = 0; i < tiles.length; i++)
+            Arrays.fill(tiles[i], Block.NO_TYPE);
+
         newBlock();
     }
 
@@ -156,7 +161,6 @@ public class TileMgr {
 
     public static void endGame() {
         PlayState.playing = false;
-        // TODO: Allow restart
     }
 
     public static void buildSchema(int[][] schema, int x, int y, int type) {
@@ -174,6 +178,7 @@ public class TileMgr {
 
     private static void newBlock() {
         checkForCompleteLines();
+        timePassed = 0;
         blockRotation = 0;
         new Block(getRandomType());
     }
