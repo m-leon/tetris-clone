@@ -1,6 +1,7 @@
 *.metadata/*
 */.DS_Store/*
 */.settings/*
+*config.ini
 *desktop.ini
 *.class
 *.classpath

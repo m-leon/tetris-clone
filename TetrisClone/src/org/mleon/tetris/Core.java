@@ -1,5 +1,6 @@
 package org.mleon.tetris;
 
+import static org.mleon.tetris.ConfigurationMgr.*;
 import org.mleon.tetris.states.*;
 import org.mleon.tetris.util.Log;
 
@@ -9,17 +10,18 @@ import org.newdawn.slick.SlickException;
 import org.newdawn.slick.state.StateBasedGame;
 
 public class Core extends StateBasedGame {
-    public static int EXIT_UNKNOWN_ERROR    = -0x01;
-    public static int EXIT_NO_ERROR         = 0x00;
-    public static int EXIT_CLOSE_REQUESTED  = 0x01;
-    public static int EXIT_CONTAINER_FAIL   = 0x02;
-    public static int EXIT_DATA_NOT_FOUND   = 0x03;
+    public final static int EXIT_UNKNOWN_ERROR      = -0x01;
+    public final static int EXIT_NO_ERROR           = 0x00;
+    public final static int EXIT_CLOSE_REQUESTED    = 0x01;
+    public final static int EXIT_CONTAINER_FAIL     = 0x02;
+    public final static int EXIT_DATA_NOT_FOUND     = 0x03;
 
     public Core() {
         super("TetrisClone");
     }
 
     public void initStatesList(GameContainer gc) throws SlickException {
+        addState(new MenuState());
         addState(new PlayState());
     }
 
@@ -40,12 +42,12 @@ public class Core extends StateBasedGame {
     }
 
     public static void main(String[] args) {
-        // TODO: Make the following options
-        int width = 800;
-        int height = 600;
-        boolean fullscreen = false;
-        boolean vsync = false;
-        boolean fpsCounter = false;
+        ConfigurationMgr.init();
+        int width = getIntConfig(CONFIG.WIDTH);
+        int height = getIntConfig(CONFIG.HEIGHT);
+        boolean fullscreen = getBoolConfig(CONFIG.FULLSCREEN);
+        boolean vsync = getBoolConfig(CONFIG.VSYNC);
+        boolean fpsCounter = getBoolConfig(CONFIG.FPS_COUNTER);
         try {
             AppGameContainer container = new AppGameContainer(new Core());
             container.setDisplayMode(width, height, fullscreen);

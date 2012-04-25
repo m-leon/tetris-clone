@@ -144,17 +144,10 @@ public class TileMgr {
             currentSchema = Block.rotate(currentSchema);
 
         int[][] newSchema = Block.rotate(currentSchema);
-        int xBase = MAX_TILE_X, yBase = MIN_TILE_Y; // Lower left hand corner of the found blocks
-        for (int i = 0; i < foundBlocks.length; i++) {
-            if (foundBlocks[i][0] < xBase)
-                xBase = foundBlocks[i][0];
-            if (foundBlocks[i][1] > yBase)
-                yBase = foundBlocks[i][1];
-        }
-        yBase -= currentSchema.length / 2;
-        if (ensurePlacement(newSchema, xBase, yBase)) {
+        int[] base = getBases(foundBlocks, currentSchema.length);
+        if (ensurePlacement(newSchema, base[0], base[1])) {
             removeBlocksAndTiles(foundBlocks);
-            buildSchema(newSchema, xBase, yBase, currentType);
+            buildSchema(newSchema, base[0], base[1], currentType);
             blockRotation += 1;
             if (blockRotation > 3 || blockRotation < 0)
                 blockRotation = 0;
@@ -183,6 +176,18 @@ public class TileMgr {
         checkForCompleteLines();
         blockRotation = 0;
         new Block(getRandomType());
+    }
+
+    private static int[] getBases(int[][] foundBlocks, int currentHeight) {
+        int[] returnValue = { MAX_TILE_X, MIN_TILE_Y }; // Lower left hand corner of the found blocks
+        for (int i = 0; i < foundBlocks.length; i++) {
+            if (foundBlocks[i][0] < returnValue[0])
+                returnValue[0] = foundBlocks[i][0];
+            if (foundBlocks[i][1] > returnValue[1])
+                returnValue[1] = foundBlocks[i][1];
+        }
+        returnValue[1] -= currentHeight / 2;
+        return returnValue;
     }
 
     private static void checkForCompleteLines() {
