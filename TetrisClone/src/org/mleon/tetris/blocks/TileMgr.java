@@ -227,10 +227,14 @@ public class TileMgr {
     }
 
     private static boolean ensurePlacement(int[][] schema, int x, int y) {
-        for (int i = 0; i < schema.length; i++)
-            for (int j = 0; j < schema[i].length; j++)
+        for (int i = 0; i < schema.length; i++) {
+            for (int j = 0; j < schema[i].length; j++) {
                 if (!isWithinBounds(x + j, y + i))
                     return false;
+                else if (isTileType(x + j, y +i))
+                    return false;
+            }
+        }
 
         return true;
     }
@@ -287,6 +291,10 @@ public class TileMgr {
             return true;
         }
         return false;
+    }
+
+    private static boolean isTileType(int x, int y) {
+        return isTileType(tiles[x][y]);
     }
 
     private static boolean isTileType(int type) {
